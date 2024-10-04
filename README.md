@@ -8,7 +8,7 @@ base_model:
 - unsloth/gemma-2-2b
 ---
 
-# **Model Card for gemma2-2b-M.O.M-gemma-sprint 
+# Model Card for gemma2-2b-M.O.M-gemma-sprint 
 
 This model is fine-tuned from the base `google/gemma-2-2b-it` model using the M.O.M dataset.
 
