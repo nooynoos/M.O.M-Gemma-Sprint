@@ -131,44 +131,6 @@ dataset = load_dataset("json", data_files=jsonl_file)
 # Save the QA pairs to a JSONL file
 ```
 
-
-**Setting Up LoRA Configuration**
-```python
-from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training, get_peft_model
-
-model.gradient_checkpointing_enable()
-model = prepare_model_for_kbit_training(model)
-
-import bitsandbytes as bnb
-
-def find_all_linear_names(model):
-    cls = bnb.nn.Linear4bit  # For 4-bit precision
-    lora_module_names = set()
-    for name, module in model.named_modules():
-        if isinstance(module, cls):
-            names = name.split('.')
-            lora_module_names.add(names[0] if len(names) == 1 else names[-1])
-    if 'lm_head' in lora_module_names:  # Needed for 16-bit
-        lora_module_names.remove('lm_head')
-    return list(lora_module_names)
-
-modules = find_all_linear_names(model)
-
-lora_config = LoraConfig(
-    r=64,
-    lora_alpha=32,
-    target_modules=modules,
-    lora_dropout=0.05,
-    bias="none",
-    task_type="CAUSAL_LM"
-)
-
-model = get_peft_model(model, lora_config)
-
-trainable, total = model.get_nb_trainable_parameters()
-print(f"Trainable: {trainable} | Total: {total} | Percentage: {trainable/total*100:.4f}%")
-```
-
 **Loading/Preparing Training Data**
 
 The dataset uploaded to HuggingFace is loaded, and a function is applied to split it into Instruction and Response.
